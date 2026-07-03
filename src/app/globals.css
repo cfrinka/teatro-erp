@@ -1,9 +1,6 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
@@ -12,15 +9,84 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  --background: #ffffff;
+  --foreground: #09090b;
+}
+
+.dark {
+  --background: #09090b;
+  --foreground: #fafafa;
+}
+
+* {
+  border-color: hsl(240 5.9% 90%);
+}
+
+.dark * {
+  border-color: hsl(240 3.7% 15.9%);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(240 5.9% 90%);
+  border-radius: 3px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: hsl(240 3.7% 25%);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(240 5.9% 80%);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: hsl(240 3.7% 35%);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.2s ease-out;
 }
