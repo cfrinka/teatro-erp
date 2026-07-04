@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Theater, Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido").min(1, "Email é obrigatório"),
@@ -47,21 +48,29 @@ function LoginForm() {
     setErrorMessage(null);
 
     try {
-      // Use redirect: true (default) so NextAuth sends json:true to the server,
-      // which responds with JSON instead of a 307 redirect.
-      // This prevents fetch from following a 307 redirect to /dashboard as POST,
-      // which would cause a 405 since the dashboard page only handles GET.
-      await signIn("credentials", {
+      const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
-        redirectTo: callbackUrl,
+        redirect: false,
       });
-    } catch (error) {
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "Erro ao fazer login. Tente novamente."
-      );
+
+      if (result?.error) {
+        setErrorMessage(
+          result.error === "CredentialsSignin"
+            ? "Email ou senha inválidos"
+            : result.error
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      if (result?.ok) {
+        toast.success("Login realizado com sucesso!");
+        // Full page navigation ensures session cookie is sent with next request
+        window.location.href = callbackUrl;
+      }
+    } catch {
+      setErrorMessage("Erro ao fazer login. Tente novamente.");
       setIsLoading(false);
     }
   };
