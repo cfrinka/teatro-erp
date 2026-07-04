@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Theater, Mail, Lock, Eye, EyeOff, AlertCircle } from "lucide-react";
-import { toast } from "sonner";
 
 const loginSchema = z.object({
   email: z.string().email("Email inválido").min(1, "Email é obrigatório"),
@@ -20,12 +19,20 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
+const errorMap: Record<string, string> = {
+  CredentialsSignin: "Email ou senha inválidos",
+  default: "Erro ao fazer login. Tente novamente.",
+};
+
 function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const urlError = searchParams.get("error");
   const [showPassword, setShowPassword] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(
+    urlError ? (errorMap[urlError] || errorMap.default) : null
+  );
 
   const {
     register,
@@ -40,30 +47,21 @@ function LoginForm() {
     setErrorMessage(null);
 
     try {
-      const result = await signIn("credentials", {
+      // Use redirect: true (default) so NextAuth sends json:true to the server,
+      // which responds with JSON instead of a 307 redirect.
+      // This prevents fetch from following a 307 redirect to /dashboard as POST,
+      // which would cause a 405 since the dashboard page only handles GET.
+      await signIn("credentials", {
         email: data.email,
         password: data.password,
-        redirect: false,
+        redirectTo: callbackUrl,
       });
-
-      if (result?.error) {
-        setErrorMessage(
-          result.error === "CredentialsSignin"
-            ? "Email ou senha inválidos"
-            : result.error
-        );
-        setIsLoading(false);
-        return;
-      }
-
-      if (result?.ok) {
-        toast.success("Login realizado com sucesso!");
-        // Use full page navigation to ensure session cookie is sent
-        // with the next request (client-side router may miss it)
-        window.location.href = callbackUrl;
-      }
-    } catch {
-      setErrorMessage("Erro ao fazer login. Tente novamente.");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Erro ao fazer login. Tente novamente."
+      );
       setIsLoading(false);
     }
   };
