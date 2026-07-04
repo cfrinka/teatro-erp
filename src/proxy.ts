@@ -55,8 +55,8 @@ export async function proxy(request: NextRequest) {
   const session = await auth();
   const { pathname } = request.nextUrl;
 
-  // Public routes
-  if (pathname === "/login" || pathname.startsWith("/api/auth")) {
+  // Public routes and API routes
+  if (pathname === "/login" || pathname.startsWith("/api/")) {
     return NextResponse.next();
   }
 
