@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { successResponse, errorResponse, requireAuth } from "@/lib/api-helpers";
 import { z } from "zod";
-import type { Prisma } from "@prisma/client";
+
 
 const createSchema = z.object({
   studentId: z.string().min(1, "Aluno é obrigatório"),
@@ -23,7 +23,7 @@ export async function GET(request: Request) {
   const page = parseInt(searchParams.get("page") || "1");
   const pageSize = parseInt(searchParams.get("pageSize") || "20");
 
-  const where: Prisma.EnrollmentWhereInput = {};
+  const where: Record<string, unknown> = {};
   if (search) {
     where.OR = [
       { student: { name: { contains: search } } },

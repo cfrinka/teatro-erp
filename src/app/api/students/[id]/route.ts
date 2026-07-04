@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { successResponse, errorResponse, requireAuth } from "@/lib/api-helpers";
 import { z } from "zod";
-import type { Prisma } from "@prisma/client";
+
 
 const updateSchema = z.object({
   name: z.string().min(1).optional(),
@@ -49,7 +49,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     const body = await request.json();
     const data = updateSchema.parse(body);
 
-    const updateData: Prisma.StudentUpdateInput = { ...data };
+    const updateData: Record<string, unknown> = { ...data };
     if (data.birthDate) updateData.birthDate = new Date(data.birthDate);
 
     const student = await prisma.student.update({

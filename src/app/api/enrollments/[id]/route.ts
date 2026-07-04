@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { successResponse, errorResponse, requireAuth } from "@/lib/api-helpers";
 import { z } from "zod";
-import type { Prisma } from "@prisma/client";
+
 
 const updateSchema = z.object({
   classId: z.string().optional(),
@@ -53,7 +53,7 @@ export async function PUT(
     const body = await request.json();
     const data = updateSchema.parse(body);
 
-    const updateData: Prisma.EnrollmentUpdateInput = { ...data };
+    const updateData: Record<string, unknown> = { ...data };
     if (data.contractDate) updateData.contractDate = new Date(data.contractDate);
     if (data.startDate) updateData.startDate = new Date(data.startDate);
     if ("endDate" in data) {

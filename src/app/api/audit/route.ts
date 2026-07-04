@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { successResponse, errorResponse, requireAuth } from "@/lib/api-helpers";
 import { NextResponse } from "next/server";
-import type { Prisma } from "@prisma/client";
+
 
 export async function GET(request: Request): Promise<NextResponse> {
   const auth = await requireAuth(["ADMIN"]);
@@ -17,7 +17,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   const page = parseInt(searchParams.get("page") || "1");
   const pageSize = parseInt(searchParams.get("pageSize") || "50");
 
-  const where: Prisma.AuditLogWhereInput = {};
+  const where: Record<string, unknown> = {};
   if (search) {
     where.description = { contains: search };
   }

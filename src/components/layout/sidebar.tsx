@@ -109,6 +109,12 @@ const navItems: NavItem[] = [
     roles: ["ADMIN", "COORDINATION", "FINANCIAL"],
   },
   {
+    label: "Usuários",
+    href: "/users",
+    icon: Users,
+    roles: ["ADMIN"],
+  },
+  {
     label: "Auditoria",
     href: "/audit",
     icon: ShieldCheck,
