@@ -51,15 +51,18 @@ export default function NewStudentPage() {
     e.preventDefault();
     setSaving(true);
     setError("");
+    console.log("Submitting form:", form);
     try {
       await fetchApi("/api/students", {
         method: "POST",
         body: JSON.stringify(form),
       });
+      console.log("Student created successfully");
       router.push("/students");
       router.refresh();
     } catch (err: any) {
       setError(err.message);
+      console.error("Error creating student:", err);
     } finally {
       setSaving(false);
     }
