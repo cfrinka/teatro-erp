@@ -16,7 +16,7 @@ model User {
   passwordHash  String
   role          String    @default("ADMIN")
   active        Boolean   @default(true)
-  photoUrl      String?
+  photoUrl      String?   @db.Text
   phone         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -32,7 +32,7 @@ model User {
 
 model Student {
   id                    String         @id @default(cuid())
-  photoUrl              String?
+  photoUrl              String?   @db.Text
   name                  String
   artisticName          String?
   cpf                   String         @unique
@@ -51,7 +51,7 @@ model Student {
   zipCode               String?
   financialResponsible  String?
   legalResponsible      String?
-  notes                 String?
+  notes                 String?   @db.Text
   status                String         @default("ACTIVE")
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
@@ -66,16 +66,16 @@ model Student {
 model Teacher {
   id             String        @id @default(cuid())
   userId         String?       @unique
-  photoUrl       String?
+  photoUrl       String?   @db.Text
   name           String
   cpf            String        @unique
   phone          String?
   email          String?
   specialty      String?
-  curriculum     String?
+  curriculum     String?   @db.Text
   availability   String?
   hourlyRate     Float         @default(0)
-  notes          String?
+  notes          String?   @db.Text
   status         String        @default("ACTIVE")
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -89,7 +89,7 @@ model Teacher {
 model Course {
   id                  String       @id @default(cuid())
   name                String
-  description         String?
+  description         String?   @db.Text
   workload            Int          @default(0)
   enrollmentFee       Float        @default(0)
   monthlyFee          Float        @default(0)
@@ -110,7 +110,7 @@ model Class {
   courseId         String
   teacherId       String?
   room            String?
-  weekDays        String      // JSON array of weekdays: ["MONDAY","WEDNESDAY","FRIDAY"]
+  weekDays        String   @db.Text      // JSON array of weekdays: ["MONDAY","WEDNESDAY","FRIDAY"]
   startTime       String      // HH:mm format
   endTime         String      // HH:mm format
   period          String?     // Morning, Afternoon, Evening
@@ -136,7 +136,7 @@ model Enrollment {
   contractDate    DateTime         @default(now())
   startDate       DateTime         @default(now())
   endDate         DateTime?
-  notes           String?
+  notes           String?   @db.Text
   status          String           @default("ACTIVE")
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
@@ -154,8 +154,8 @@ model Attendance {
   classId         String
   date            DateTime
   status          String           @default("PRESENT")
-  content         String?
-  notes           String?
+  content         String?   @db.Text
+  notes           String?   @db.Text
   recordedBy      String?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
@@ -175,7 +175,7 @@ model Payment {
   amount          Float         @default(0)
   status          String        @default("PENDING")
   method          String?
-  notes           String?
+  notes           String?   @db.Text
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
@@ -186,14 +186,14 @@ model Payment {
 
 model Expense {
   id          String    @id @default(cuid())
-  description String
+  description String   @db.Text
   amount      Float     @default(0)
   category    String?
   dueDate     DateTime
   paidDate    DateTime?
   status      String    @default("PENDING")
   paymentMethod String?
-  notes       String?
+  notes       String?   @db.Text
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -203,7 +203,7 @@ model Expense {
 model Event {
   id          String    @id @default(cuid())
   title       String
-  description String?
+  description String?   @db.Text
   type        String    @default("CLASS")
   classId     String?
   startDate   DateTime
@@ -223,8 +223,8 @@ model Communication {
   id              String             @id @default(cuid())
   type            String             // EMAIL, SMS, WHATSAPP, NOTIFICATION, BULLETIN
   subject         String
-  content         String
-  recipients      String             // JSON array of recipient IDs
+  content         String   @db.Text
+  recipients      String   @db.Text    // JSON array of recipient IDs
   recipientType   String             // ALL_STUDENTS, ALL_PARENTS, SPECIFIC_STUDENTS, ALL_TEACHERS, CLASS
   classId         String?
   scheduledFor    DateTime?
@@ -242,7 +242,7 @@ model Communication {
 model Message {
   id          String   @id @default(cuid())
   title       String
-  content     String
+  content     String   @db.Text
   senderId    String
   recipientId String?
   readAt      DateTime?
@@ -258,11 +258,11 @@ model Document {
   title         String
   type          String       // CONTRACT, FORM, REPORT, CERTIFICATE, OTHER
   category      String?
-  description   String?
-  fileUrl       String?
+  description   String?  @db.Text
+  fileUrl       String?   @db.Text
   studentId     String?
   enrollmentId  String?
-  tags          String?      // JSON array
+  tags          String?   @db.Text      // JSON array
   archived      Boolean      @default(false)
   uploadedById  String
   createdAt     DateTime     @default(now())
@@ -280,7 +280,7 @@ model AuditLog {
   action      String   // CREATE, UPDATE, DELETE
   entity      String   // Student, Teacher, Course, etc.
   entityId    String?
-  description String?
+  description String?   @db.Text
   ipAddress   String?
   createdAt   DateTime @default(now())
 
@@ -292,7 +292,7 @@ model AuditLog {
 model Settings {
   id                      String   @id @default(cuid())
   schoolName              String   @default("Escola de Teatro")
-  schoolAddress           String?
+  schoolAddress           String?   @db.Text
   schoolPhone             String?
   schoolEmail             String?
   schoolCnpj              String?
@@ -302,7 +302,7 @@ model Settings {
   allowOnlineRegistration Boolean  @default(false)
   enableSmsNotifications  Boolean  @default(false)
   enableEmailNotifications Boolean @default(true)
-  workingDays             String?  // JSON array
+  workingDays             String?   @db.Text  // JSON array
   academicYear            String?
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt

@@ -7,7 +7,7 @@ const globalForPrisma = globalThis as unknown as {
 
 const databaseUrl =
   process.env.DATABASE_URL ||
-  "mysql://admin:admin123@banco-teatro:3306/banco-teatro-erp";
+  "mysql://admin:admin123@banco-teatro:3306/banco-teatro-erp?allowPublicKeyRetrieval=true";
 const databaseName =
   process.env.MYSQL_DATABASE || new URL(databaseUrl).pathname.replace(/^\//, "");
 
