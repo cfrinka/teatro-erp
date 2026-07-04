@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Suspense } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,7 +21,6 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
   const [showPassword, setShowPassword] = React.useState(false);
@@ -59,8 +58,9 @@ function LoginForm() {
 
       if (result?.ok) {
         toast.success("Login realizado com sucesso!");
-        router.push(callbackUrl);
-        router.refresh();
+        // Use full page navigation to ensure session cookie is sent
+        // with the next request (client-side router may miss it)
+        window.location.href = callbackUrl;
       }
     } catch {
       setErrorMessage("Erro ao fazer login. Tente novamente.");
